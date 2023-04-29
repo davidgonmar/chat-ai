@@ -1,10 +1,10 @@
 ### ChatAI
 
-ChatAI is a simple clone of the ChatGPT webapp. It can allow guests to use it, as well as people to login and save their conversations.
+ChatAI is a simple clone of the ChatGPT webapp using the new NextJS app directory. It can allow guests to use it, as well as people to login and save their conversations.
 
 ## Tech stack
 
-- Nextjs + TS for the frontend and API routes
+- Nextjs with app dir + TS for the frontend and API routes
 - Prisma for the database management
 - TailwindCSS for the styling
 - Due to compatibility with streams and React Query, state management is done with a mix of Zustand and React Query
