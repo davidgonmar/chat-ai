@@ -1,8 +1,8 @@
-### ChatAI
+## ChatAI
 
 ChatAI is a simple clone of the ChatGPT webapp using the new NextJS app directory. It can allow guests to use it, as well as people to login and save their conversations.
 
-## Tech stack
+# Tech stack
 
 - Nextjs with app dir + TS for the frontend and API routes
 - Prisma for the database management
@@ -11,7 +11,7 @@ ChatAI is a simple clone of the ChatGPT webapp using the new NextJS app director
 - Auth is done with NextAuth.js
 - OpenAI API for the AI
 
-## How to run
+# How to run
 
 1. Clone the repo
 2. Run `npm install` to install the dependencies
