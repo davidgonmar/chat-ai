@@ -2,7 +2,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Chat } from '@prisma/client';
+import { Chat, Session } from '@prisma/client';
 import { clientSideQueryClient as queryClient } from '@/components/util/Providers';
 
 export const useChats = () => {
@@ -13,13 +13,12 @@ export const useChats = () => {
   // Get all
   const { data: chats, isLoading: chatsLoading } = useQuery({
     queryKey: ['chats', session?.user.id],
-    queryFn: () => _getChats(),
+    queryFn: () => _getChats(session as Session | null),
   });
 
   // Add
   // Use mutate async for it to be possible to await the mutation
-
-  const { mutateAsync: addChat } = useMutation(
+  const { mutateAsync: addChat, isLoading: isAddingChat } = useMutation(
     (message: string) => _postChat(message),
     {
       onSuccess: (data) => {
@@ -55,6 +54,7 @@ export const useChats = () => {
     chats: (chats || []) as Chat[],
     chatsLoading,
     addChat: (message: string) => addChat(message),
+    isAddingChat,
     deleteChat: (chatId: string) => deleteChat(chatId),
     deleteChatCurrentId,
   };
@@ -66,8 +66,10 @@ const CHATS_URL = `/api/chats`;
 
 // Returns chats by userId
 // They get automatically filtered by the server
-export const _getChats = async () => {
+export const _getChats = async (session: Session | null) => {
   try {
+    // If no session, return empty array and don't try to fetch
+    if (!session) return [];
     const response = await fetch(`${CHATS_URL}`);
     const data = await response.json();
     const chats: Chat[] = data.chats || [];

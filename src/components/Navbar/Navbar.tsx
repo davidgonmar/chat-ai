@@ -7,7 +7,7 @@ import { Loader2, MessageSquare } from 'lucide-react';
 import { useState } from 'react';
 import { Chat } from '@prisma/client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import clsx from 'clsx';
 import { useChats } from '@/hooks/useChats';
 import Image from 'next/image';
@@ -17,6 +17,7 @@ export default function Navbar() {
   const { chats } = useChats();
   const [isOpen, setIsOpen] = useState(false);
 
+  const router = useRouter();
   return (
     <>
       <IconButton
@@ -45,7 +46,15 @@ export default function Navbar() {
       >
         <div className='flex flex-col gap-2 sticky top-0 bg-gray-800 z-10 pt-5 pb-3 w-full'>
           <AuthCard />
-          <Link href='/chat' onClick={() => setIsOpen(false)}>
+          <Link
+            href='/chat'
+            onClick={() => {
+              setIsOpen(false);
+              // In case we are already on the chat page (unauthenticated)
+              // we need to refresh the page to reset the state
+              router.refresh();
+            }}
+          >
             <div
               className={clsx(
                 'border-white/20 border rounded-md px-3 py-3 gap-2 self-stretch hover:shadow-lg hover:shadow-white/10 transition-all duration-75 flex'
@@ -65,26 +74,6 @@ export default function Navbar() {
         </div>
       </div>
     </>
-  );
-}
-
-{
-  status === 'unauthenticated' && (
-    <button
-      className='border-white/20 border font-bold flex gap-2 text-sm items-center p-2 rounded-md w-full hover:shadow-lg hover:shadow-white/10'
-      onClick={() => {
-        signIn('google');
-      }}
-    >
-      <Image
-        src='/google-icon.png'
-        alt=''
-        referrerPolicy='no-referrer'
-        width={30}
-        height={30}
-      />
-      Sign in with Google
-    </button>
   );
 }
 
@@ -114,7 +103,7 @@ const AuthCard = () => {
     </div>
   ) : (
     <button
-      className='border-white/20 border font-bold flex gap-2 text-sm items-center p-2 rounded-md w-full hover:shadow-lg hover:shadow-white/10'
+      className='border-white/20 border font-semibold flex gap-4 text-base items-center p-2 rounded-md w-full hover:shadow-lg hover:shadow-white/10 justify-start'
       onClick={() => {
         signIn('google');
       }}
@@ -130,6 +119,7 @@ const AuthCard = () => {
     </button>
   );
 };
+
 const ChatCard = ({ chat }: { chat: Chat }) => {
   const currentChatId = usePathname()?.split('/')[2];
   const { deleteChat, deleteChatCurrentId } = useChats();

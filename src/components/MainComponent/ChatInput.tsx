@@ -28,7 +28,7 @@ export default function ChatInput() {
   };
 
   return (
-    <div className='py-8 chat-container bg-transparent'>
+    <div className='py-4 md:py-8 chat-container bg-transparent'>
       <div className='flex items-center bg-slate-800 rounded-md p-2 pl-4 shadow-lg gap-2'>
         <textarea
           ref={textAreaRef}

@@ -14,9 +14,14 @@ export default async function ChatLayout({
   const session = await getServerSession(authOptions);
   const queryClient = getQueryClient();
   if (session) {
-    await queryClient.prefetchQuery(['chats', session?.user.id], () =>
-      getChatsByUserId(session?.user.id)
-    );
+    await queryClient.prefetchQuery(['chats', session?.user.id], async () => {
+      // The chat object has a property of type Date, which is not serializable
+      // RSC will warn us if we pass them to the client directly
+      // We need to stringify and parse the object as a workaround
+      return JSON.parse(
+        JSON.stringify(await getChatsByUserId(session?.user.id))
+      );
+    });
   }
 
   const dehydratedState = dehydrate(queryClient);
