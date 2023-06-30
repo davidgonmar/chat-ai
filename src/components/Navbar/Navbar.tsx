@@ -12,10 +12,15 @@ import clsx from 'clsx';
 import { useChats } from '@/hooks/useChats';
 import Image from 'next/image';
 import IconButton from '../ui/IconButton';
+import useClickOutside from '@/hooks/useClickOutside';
 
 export default function Navbar() {
   const { chats } = useChats();
   const [isOpen, setIsOpen] = useState(false);
+
+  const clickOutSideRef = useClickOutside<HTMLDivElement>(() =>
+    setIsOpen(false)
+  );
 
   const router = useRouter();
   return (
@@ -39,6 +44,7 @@ export default function Navbar() {
         <X />
       </IconButton>
       <div
+        ref={clickOutSideRef}
         className={clsx(
           'flex flex-col items-center justify-start  w-[250px] shrink-0 bg-gray-800 px-2 pb-5 pt-0 md:px-3 transition-all duration-300 ease-in-out fixed md:block h-full md:trangray-x-0 md:static shadow-lg md:shadow-sm overflow-auto max-h-full',
           isOpen ? 'translate-x-0' : '-translate-x-[120%] md:translate-x-0'
@@ -89,6 +95,7 @@ const AuthCard = () => {
           referrerPolicy='no-referrer'
           width={30}
           height={30}
+          className='rounded-sm'
         />
       </div>
       <div>{getFirstNames(session?.user?.name || '', 1)}</div>

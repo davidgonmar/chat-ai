@@ -9,8 +9,9 @@ export default function MessagesContainer() {
   // scroll to bottom on new message
   useEffect(() => {
     if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop =
-        messagesContainerRef.current.scrollHeight;
+      messagesContainerRef.current.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+      });
     }
   }, [messages, error]);
 
